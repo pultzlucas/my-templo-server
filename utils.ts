@@ -9,6 +9,14 @@ export function stringToUint(str: string) {
     return new Uint8Array(uintArray);
 }
 
+export function UintToString(uint: Uint8Array): string {
+    return atob(new TextDecoder().decode(uint))
+}
+
 export function getTemplateFilePath(templateName: string) {
+    if(templateName.endsWith('.tpo')) {
+        return `./templates/${templateName}`
+    }
+
     return `./templates/${templateName}.tpo`
 }

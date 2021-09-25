@@ -1,6 +1,6 @@
 import { Application, Router, RouterContext } from "https://deno.land/x/oak@v9.0.0/mod.ts"
 import { existsSync } from 'https://deno.land/std@0.108.0/fs/mod.ts'
-import { stringToUint, getTemplateFilePath } from './utils.ts'
+import { stringToUint, UintToString, getTemplateFilePath } from './utils.ts'
 import { Template } from './types.ts'
 
 const HOST = 'localhost'
@@ -13,39 +13,51 @@ router.get('/', (ctx: RouterContext) => {
 })
 
 router.get('/templates', (ctx: RouterContext) => {
-  const templates = Array.from(Deno.readDirSync('./templates'))
+  try {
+    const templates = Array.from(Deno.readDirSync('./templates'))
+  
+    if (templates.length == 0) {
+      ctx.response.status = 200
+      ctx.response.body = []
+    }
+  
 
-  if (templates.length == 0) {
     ctx.response.status = 200
-    ctx.response.body = []
+    ctx.response.body = templates
+      .map(filename => Deno.readFileSync(getTemplateFilePath(filename.name)))
+      .map(UintToString)
+      .map(str => JSON.parse(str))
+  
+  } catch (error) {
+    ctx.response.status = 500
+    ctx.response.body = {
+      error: String(error)
+    }
   }
-
-  ctx.response.status = 200
-  ctx.response.body = templates.map(filename => Deno.readFileSync(filename.name))
 })
 
 router.get('/templates/:templateName', (ctx: RouterContext) => {
   try {
     const templateName = ctx.params.templateName
-    
-    if(!templateName) {
+
+    if (!templateName) {
       throw 'Template name must be specified.'
     }
 
     const templateFilename = getTemplateFilePath(templateName)
-    
+
     if (!existsSync(templateFilename)) {
       ctx.response.status = 404
       ctx.response.body = {
         error: 'No template found.'
       }
     }
-  
+
     const myTemplate = Deno.readFileSync(templateFilename)
-  
+
     ctx.response.status = 200
     ctx.response.body = myTemplate
-    
+
   } catch (error) {
     ctx.response.status = 500
     ctx.response.body = {
@@ -58,8 +70,7 @@ router.post('/pub', async (ctx: RouterContext) => {
   try {
     const template: Template = await ctx.request.body().value
     const templateFile = Deno.createSync(getTemplateFilePath(template.name))
-    const templateString = String(template)
-    templateFile.writeSync(stringToUint(templateString))
+    templateFile.writeSync(stringToUint(String(template)))
 
     ctx.response.status = 201
     ctx.response.body = {
@@ -78,7 +89,7 @@ router.delete('/unpub/:templateName', (ctx: RouterContext) => {
   try {
     const templateName: string | undefined = ctx.params.templateName
 
-    if(!templateName) {
+    if (!templateName) {
       throw 'Template name must be specified.'
     }
 
@@ -87,6 +98,31 @@ router.delete('/unpub/:templateName', (ctx: RouterContext) => {
     ctx.response.status = 200
     ctx.response.body = {
       success: `Template "${templateName}" was unpublished.`
+    }
+
+  } catch (error) {
+    ctx.response.status = 500
+    ctx.response.body = {
+      error: String(error)
+    }
+  }
+})
+
+router.put('/update/:templateName', async (ctx: RouterContext) => {
+  try {
+    const templateName: string | undefined = ctx.params.templateName
+    const template: Template = await ctx.request.body().value
+
+    if (!templateName) {
+      throw 'Template name must be specified.'
+    }
+
+    Deno.removeSync(getTemplateFilePath(templateName))
+    Deno.writeFileSync(getTemplateFilePath(template.name), stringToUint(JSON.stringify(template)))
+
+    ctx.response.status = 200
+    ctx.response.body = {
+      success: `Template "${templateName}" was updated.`
     }
 
   } catch (error) {
