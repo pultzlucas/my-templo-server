@@ -1,10 +1,10 @@
 import { Application, Router, RouterContext } from "https://deno.land/x/oak@v9.0.0/mod.ts"
 import { existsSync } from 'https://deno.land/std@0.108.0/fs/mod.ts'
 import { stringToUint, UintToString, getTemplateFilePath } from './utils.ts'
-import update from './methods/update.ts'
-import unpublish from './methods/unpublish.ts'
-import publish from './methods/publish.ts'
-import templates from './methods/templates.ts'
+import update from './routes/update.ts'
+import unpublish from './routes/unpublish.ts'
+import publish from './routes/publish.ts'
+import templates from './routes/templates.ts'
 
 const HOST = 'localhost'
 const PORT = 8080
