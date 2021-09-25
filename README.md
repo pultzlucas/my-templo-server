@@ -7,7 +7,7 @@ This templo server containing all my public templates available to use and do no
 - **Heroku** for deployment.
 
 ## Api entry point
-coming soon...
+https://pultzlucas-templo-server.herokuapp.com
 
 ## Usage
 
