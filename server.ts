@@ -1,6 +1,4 @@
 import { Application, Router, RouterContext } from "https://deno.land/x/oak@v9.0.0/mod.ts"
-import { existsSync } from 'https://deno.land/std@0.108.0/fs/mod.ts'
-import { stringToUint, UintToString, getTemplateFilePath } from './utils.ts'
 import update from './routes/update.ts'
 import unpublish from './routes/unpublish.ts'
 import publish from './routes/publish.ts'
