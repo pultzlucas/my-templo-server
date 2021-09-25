@@ -8,3 +8,7 @@ export function stringToUint(str: string) {
 
     return new Uint8Array(uintArray);
 }
+
+export function getTemplateFilePath(templateName: string) {
+    return `./templates/${templateName}.tpo`
+}

@@ -1,6 +1,6 @@
 import { Application, Router, RouterContext } from "https://deno.land/x/oak@v9.0.0/mod.ts"
 import { existsSync } from 'https://deno.land/std@0.108.0/fs/mod.ts'
-import { stringToUint } from './utils.ts'
+import { stringToUint, getTemplateFilePath } from './utils.ts'
 import { Template } from './types.ts'
 
 const HOST = 'localhost'
@@ -25,32 +25,68 @@ router.get('/templates', (ctx: RouterContext) => {
 })
 
 router.get('/templates/:templateName', (ctx: RouterContext) => {
-  const templateName = ctx.params.templateName
-  const templateFilename = `./templates/${templateName}.tpo`
+  try {
+    const templateName = ctx.params.templateName
+    
+    if(!templateName) {
+      throw 'Template name must be specified.'
+    }
 
-  if (!existsSync(templateFilename)) {
-    ctx.response.status = 404
+    const templateFilename = getTemplateFilePath(templateName)
+    
+    if (!existsSync(templateFilename)) {
+      ctx.response.status = 404
+      ctx.response.body = {
+        error: 'No template found.'
+      }
+    }
+  
+    const myTemplate = Deno.readFileSync(templateFilename)
+  
+    ctx.response.status = 200
+    ctx.response.body = myTemplate
+    
+  } catch (error) {
+    ctx.response.status = 500
     ctx.response.body = {
-      error: 'No template found.'
+      error: String(error)
     }
   }
-
-  const myTemplate = Deno.readFileSync(templateFilename)
-
-  ctx.response.status = 200
-  ctx.response.body = myTemplate
 })
 
 router.post('/pub', async (ctx: RouterContext) => {
   try {
     const template: Template = await ctx.request.body().value
-    const templateFile = Deno.createSync(`./templates/${template.name}.tpo`)
+    const templateFile = Deno.createSync(getTemplateFilePath(template.name))
     const templateString = String(template)
     templateFile.writeSync(stringToUint(templateString))
 
     ctx.response.status = 201
     ctx.response.body = {
-      success: 'Template was published.'
+      success: `Template "${template.name}" was published.`
+    }
+
+  } catch (error) {
+    ctx.response.status = 500
+    ctx.response.body = {
+      error: String(error)
+    }
+  }
+})
+
+router.delete('/unpub/:templateName', (ctx: RouterContext) => {
+  try {
+    const templateName: string | undefined = ctx.params.templateName
+
+    if(!templateName) {
+      throw 'Template name must be specified.'
+    }
+
+    Deno.removeSync(getTemplateFilePath(templateName))
+
+    ctx.response.status = 200
+    ctx.response.body = {
+      success: `Template "${templateName}" was unpublished.`
     }
 
   } catch (error) {
