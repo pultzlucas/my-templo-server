@@ -3,6 +3,7 @@ import update from './routes/update.ts'
 import unpublish from './routes/unpublish.ts'
 import publish from './routes/publish.ts'
 import templates from './routes/templates.ts'
+import about from './routes/about.ts'
 
 const HOST = 'localhost'
 const PORT = 8080
@@ -17,6 +18,7 @@ app.use(update.prefix('/update').routes())
 app.use(unpublish.prefix('/unpub').routes())
 app.use(publish.prefix('/pub').routes())
 app.use(templates.prefix('/templates').routes())
+app.use(about.prefix('/about').routes())
 
 app.use(router.routes())
 app.use(router.allowedMethods())
