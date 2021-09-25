@@ -1,28 +1,12 @@
 import { Application, Router, RouterContext } from "https://deno.land/x/oak@v9.0.0/mod.ts"
 import { existsSync } from 'https://deno.land/std@0.108.0/fs/mod.ts'
+import { stringToUint } from './utils.ts'
+import { Template } from './types.ts'
 
 const HOST = 'localhost'
 const PORT = 8080
 const app = new Application()
 const router = new Router()
-
-interface Template {
-  name: string
-  created_at: string
-  paths: Array<{
-    path: string
-    path_type: string
-  }>
-  contents: Array<{
-    file_path: string
-    text: string
-  }>
-  args?: Array<{
-    key: string
-    query: string
-    default: string
-  }> | null
-}
 
 router.get('/', (ctx: RouterContext) => {
   ctx.response.body = 'Welcome to my templo server :)'
@@ -56,14 +40,6 @@ router.get('/templates/:templateName', (ctx: RouterContext) => {
   ctx.response.status = 200
   ctx.response.body = myTemplate
 })
-
-function stringToUint(str: string) {
-  const charList = btoa(unescape(encodeURIComponent(str))).split('')
-  const uintArray = new Array(charList.length).fill(0)
-    .map((char: string) => char.charCodeAt(0))
-
-  return new Uint8Array(uintArray);
-}
 
 router.post('/pub', async (ctx: RouterContext) => {
   try {
