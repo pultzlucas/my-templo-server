@@ -20,7 +20,6 @@ router.get('/templates', (ctx: RouterContext) => {
       ctx.response.status = 200
       ctx.response.body = []
     }
-  
 
     ctx.response.status = 200
     ctx.response.body = templates
@@ -49,8 +48,9 @@ router.get('/templates/:templateName', (ctx: RouterContext) => {
     if (!existsSync(templateFilename)) {
       ctx.response.status = 404
       ctx.response.body = {
-        error: 'No template found.'
+        error: `Not is possible to find "${templateName}".`
       }
+      return
     }
 
     ctx.response.status = 200
@@ -90,6 +90,14 @@ router.delete('/unpub/:templateName', (ctx: RouterContext) => {
       throw 'Template name must be specified.'
     }
 
+    if (!existsSync(getTemplateFilePath(templateName))) {
+      ctx.response.status = 404
+      ctx.response.body = {
+        error: `Not is possible to find "${templateName}".`
+      }
+      return
+    }
+
     Deno.removeSync(getTemplateFilePath(templateName))
 
     ctx.response.status = 200
@@ -112,6 +120,14 @@ router.put('/update/:templateName', async (ctx: RouterContext) => {
 
     if (!templateName) {
       throw 'Template name must be specified.'
+    }
+
+    if (!existsSync(getTemplateFilePath(templateName))) {
+      ctx.response.status = 404
+      ctx.response.body = {
+        error: `Not is possible to find "${templateName}".`
+      }
+      return
     }
 
     Deno.removeSync(getTemplateFilePath(templateName))
