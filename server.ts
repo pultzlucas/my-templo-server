@@ -53,10 +53,8 @@ router.get('/templates/:templateName', (ctx: RouterContext) => {
       }
     }
 
-    const myTemplate = Deno.readFileSync(templateFilename)
-
     ctx.response.status = 200
-    ctx.response.body = myTemplate
+    ctx.response.body = UintToString(Deno.readFileSync(templateFilename))
 
   } catch (error) {
     ctx.response.status = 500
@@ -69,8 +67,7 @@ router.get('/templates/:templateName', (ctx: RouterContext) => {
 router.post('/pub', async (ctx: RouterContext) => {
   try {
     const template: Template = await ctx.request.body().value
-    const templateFile = Deno.createSync(getTemplateFilePath(template.name))
-    templateFile.writeSync(stringToUint(String(template)))
+    await Deno.writeTextFile(getTemplateFilePath(template.name), JSON.stringify(template))
 
     ctx.response.status = 201
     ctx.response.body = {

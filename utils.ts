@@ -1,5 +1,5 @@
 export function stringToUint(str: string) {
-    const charList = btoa(unescape(encodeURIComponent(str))).split('')
+    const charList = unescape(encodeURIComponent(str)).split('')
     const uintArray: number[] = []
 
     for (var i = 0; i < charList.length; i++) {
@@ -10,7 +10,7 @@ export function stringToUint(str: string) {
 }
 
 export function UintToString(uint: Uint8Array): string {
-    return atob(new TextDecoder().decode(uint))
+    return new TextDecoder().decode(uint)
 }
 
 export function getTemplateFilePath(templateName: string) {
