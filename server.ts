@@ -5,8 +5,6 @@ import publish from './routes/publish.ts'
 import templates from './routes/templates.ts'
 import about from './routes/about.ts'
 
-const HOST = 'localhost'
-const PORT = 8080
 const app = new Application()
 const router = new Router()
 
@@ -23,6 +21,8 @@ app.use(about.prefix('/about').routes())
 app.use(router.routes())
 app.use(router.allowedMethods())
 
-console.log(`Server is running on ${HOST}:${PORT}`);
+const HOST = Deno.env.get('HOST') ?? 'localhost'
+const PORT = parseInt(Deno.env.get('PORT') ?? '8000')
 
+console.log(`Server is running on ${HOST}:${PORT}`);
 await app.listen({ port: PORT })
