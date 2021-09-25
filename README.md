@@ -1,5 +1,5 @@
 # My templo server
-This templo server contain all my public templates available to use and do not requires access key.
+This templo server containing all my public templates available to use and do not requires access key.
 
 ## Tecnologies used
 - **Deno** for typescript runtime
