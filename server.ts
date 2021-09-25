@@ -57,12 +57,20 @@ router.get('/templates/:templateName', (ctx: RouterContext) => {
   ctx.response.body = myTemplate
 })
 
+function stringToUint(str: string) {
+  const charList = btoa(unescape(encodeURIComponent(str))).split('')
+  const uintArray = new Array(charList.length).fill(0)
+    .map((char: string) => char.charCodeAt(0))
+
+  return new Uint8Array(uintArray);
+}
+
 router.post('/pub', async (ctx: RouterContext) => {
   try {
     const template: Template = await ctx.request.body().value
     const templateFile = Deno.createSync(`./templates/${template.name}.tpo`)
     const templateString = String(template)
-    templateFile.writeSync()
+    templateFile.writeSync(stringToUint(templateString))
 
     ctx.response.status = 201
     ctx.response.body = {
