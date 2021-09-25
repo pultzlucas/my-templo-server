@@ -2,8 +2,9 @@
 This templo server containing all my public templates available to use and do not requires access key.
 
 ## Tecnologies used
-- **Deno** for typescript runtime
-- **Oak** for HTTP middleware framework
+- **Deno** for typescript runtime.
+- **Oak** for HTTP middleware framework.
+- **Heroku** for deployment.
 
 ## Api entry point
 coming soon...
