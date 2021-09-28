@@ -11,8 +11,6 @@ router.post('/', checkUserPermissions, async (ctx: RouterContext) => {
         const templateAlreadyExists = Array.from(Deno.readDirSync('./templates'))
             .some(templateFilename => templateFilename.name === `${template.name}.tpo`)
 
-        console.log(templateAlreadyExists)
-
         if (templateAlreadyExists) {
             ctx.response.status = Status.Conflict
             ctx.response.body = {
