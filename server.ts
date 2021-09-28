@@ -1,3 +1,4 @@
+import "https://deno.land/x/dotenv@v3.0.0/load.ts"
 import { Application, Router, RouterContext } from "https://deno.land/x/oak@v9.0.0/mod.ts"
 import update from './routes/update.ts'
 import unpublish from './routes/unpublish.ts'
@@ -22,7 +23,7 @@ app.use(router.routes())
 app.use(router.allowedMethods())
 
 const HOST = Deno.env.get('HOST') ?? 'localhost'
-const PORT = parseInt(Deno.env.get('PORT') ?? '8000')
+const PORT = parseInt(Deno.env.get('PORT') ?? '8080')
 
 console.log(`Server is running on ${HOST}:${PORT}`);
 await app.listen({ port: PORT })

@@ -8,7 +8,7 @@ router.get('/', (ctx: RouterContext) => {
         author: 'pultzlucas',
         version: '0.1.0',
         description: 'My templo server containing all my public templates available to use',
-        requiresAcessKey: false
+        requiresAccessKey: false
     } 
 
     ctx.response.body = about

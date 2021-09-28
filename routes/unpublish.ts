@@ -1,10 +1,11 @@
 import { Router, RouterContext } from "https://deno.land/x/oak@v9.0.0/mod.ts"
 import { getTemplateFilePath } from '../utils.ts'
 import { existsSync } from 'https://deno.land/std@0.108.0/fs/mod.ts'
+import checkUserPermissions from '../middlewares/check-permissions.ts'
 
 const router = new Router()
 
-router.delete('/:templateName', (ctx: RouterContext) => {
+router.delete('/:templateName', checkUserPermissions, (ctx: RouterContext) => {
     try {
         const templateName: string | undefined = ctx.params.templateName
 

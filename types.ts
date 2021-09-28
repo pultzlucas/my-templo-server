@@ -20,5 +20,5 @@ export interface About {
   author: string,
   version: string,
   description: string,
-  requiresAcessKey: boolean,
+  requiresAccessKey: boolean,
 }

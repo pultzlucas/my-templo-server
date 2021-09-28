@@ -1,10 +1,11 @@
 import { Router, RouterContext } from "https://deno.land/x/oak@v9.0.0/mod.ts"
 import { getTemplateFilePath } from '../utils.ts'
 import { Template } from '../types.ts'
+import checkUserPermissions from '../middlewares/check-permissions.ts'
 
 const router = new Router()
 
-router.post('/', async (ctx: RouterContext) => {
+router.post('/', checkUserPermissions, async (ctx: RouterContext) => {
     try {
         const template: Template = await ctx.request.body().value
         await Deno.writeTextFile(getTemplateFilePath(template.name), JSON.stringify(template))

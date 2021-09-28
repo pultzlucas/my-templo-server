@@ -2,10 +2,11 @@ import { Router, RouterContext } from "https://deno.land/x/oak@v9.0.0/mod.ts"
 import { stringToUint, getTemplateFilePath } from '../utils.ts'
 import { existsSync } from 'https://deno.land/std@0.108.0/fs/mod.ts'
 import { Template } from '../types.ts'
+import checkUserPermissions from '../middlewares/check-permissions.ts'
 
 const router = new Router()
-
-router.put('/:templateName', async (ctx: RouterContext) => {
+ 
+router.put('/:templateName', checkUserPermissions, async (ctx: RouterContext) => {
     try {
         const templateName: string | undefined = ctx.params.templateName
         const template: Template = await ctx.request.body().value
