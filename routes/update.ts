@@ -1,4 +1,4 @@
-import { Router, RouterContext } from "https://deno.land/x/oak@v9.0.0/mod.ts"
+import { Router, RouterContext, Status } from "https://deno.land/x/oak@v9.0.0/mod.ts"
 import { stringToUint, getTemplateFilePath } from '../utils.ts'
 import { existsSync } from 'https://deno.land/std@0.108.0/fs/mod.ts'
 import { Template } from '../types.ts'
@@ -12,27 +12,26 @@ router.put('/:templateName', checkUserPermissions, async (ctx: RouterContext) =>
         const template: Template = await ctx.request.body().value
 
         if (!templateName) {
-            throw 'Template name must be specified.'
+            ctx.response.status = Status.NotAcceptable
+            ctx.response.body = {
+                error: 'Template name must be specified.'
+            }
+            return
         }
 
         if (!existsSync(getTemplateFilePath(templateName))) {
-            ctx.response.status = 404
-            ctx.response.body = {
-                error: `Not is possible to find "${templateName}".`
-            }
-            return
         }
 
         Deno.removeSync(getTemplateFilePath(templateName))
         Deno.writeFileSync(getTemplateFilePath(template.name), stringToUint(JSON.stringify(template)))
 
-        ctx.response.status = 200
+        ctx.response.status = Status.OK
         ctx.response.body = {
             success: `Template "${templateName}" was updated.`
         }
 
     } catch (error) {
-        ctx.response.status = 500
+        ctx.response.status = Status.InternalServerError
         ctx.response.body = {
             error: String(error)
         }
