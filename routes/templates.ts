@@ -54,7 +54,10 @@ router.get('/:templateName', (ctx: RouterContext) => {
 
         const body: GetTemplateResponse = {
             extra: {
-                message: `Enjoy the '${templateName}' template :D`,
+                message: 
+                    `Enjoy the '${templateName}' template :D`+
+                    '\n' +
+                    'by pultzlucas',
                 is_error: false
             },
             template: JSON.parse(UintToString(Deno.readFileSync(templateFilename)))
