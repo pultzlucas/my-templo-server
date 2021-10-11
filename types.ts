@@ -22,3 +22,11 @@ export interface About {
   description: string,
   requiresAccessKey: boolean,
 }
+
+export interface GetTemplateResponse {
+  extra: {
+    message: string,
+    is_error: boolean
+  }
+  template?: string
+}

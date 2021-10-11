@@ -1,5 +1,6 @@
 import { Router, RouterContext } from "https://deno.land/x/oak@v9.0.0/mod.ts"
 import { getTemplateFilePath, UintToString } from '../utils.ts'
+import { GetTemplateResponse } from '../types.ts'
 import { existsSync } from 'https://deno.land/std@0.108.0/fs/mod.ts'
 
 const router = new Router()
@@ -39,14 +40,27 @@ router.get('/:templateName', (ctx: RouterContext) => {
 
         if (!existsSync(templateFilename)) {
             ctx.response.status = 404
-            ctx.response.body = {
-                error: `Not is possible to find "${templateName}".`
+            const body: GetTemplateResponse = {
+                extra: {
+                    message: `Not is possible to find "${templateName}".`,
+                    is_error: true
+                }
             }
+            ctx.response.body = body
             return
         }
 
         ctx.response.status = 200
-        ctx.response.body = UintToString(Deno.readFileSync(templateFilename))
+
+        const body: GetTemplateResponse = {
+            extra: {
+                message: `Enjoy the '${templateName}' template :D`,
+                is_error: false
+            },
+            template: JSON.parse(UintToString(Deno.readFileSync(templateFilename)))
+        }
+
+        ctx.response.body = body
 
     } catch (error) {
         ctx.response.status = 500
