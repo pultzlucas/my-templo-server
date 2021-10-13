@@ -13,5 +13,5 @@ https://pultzlucas-templo-server.herokuapp.com
 
 Route | Description |
 -----------|--------|
-/templates  | returns all remote repository templates
-/templates/&lt;template-name&gt; | returns the specified template
+/templates  | returns all templates
+/templates/&lt;template-name&gt; | returns a specific template
