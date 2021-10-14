@@ -6,7 +6,7 @@ This is a templo server containing all my public templates available to use and 
 - **Oak** for HTTP middleware framework.
 - **Heroku** for deployment.
 
-## Api entry point
+## Api end point
 https://pultzlucas-templo-server.herokuapp.com
 
 ## Usage
